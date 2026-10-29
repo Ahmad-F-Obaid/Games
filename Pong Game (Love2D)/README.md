@@ -49,12 +49,11 @@ In standard Pong, constant velocity can lead to repetitive, prolonged rallies wi
 ## 📸 Media & Demonstration
 
 ### Gameplay Screenshot
-![Gameplay](screenshots/gameplay.png)
+![Gameplay](screenshots/Pong%20Game%20%28Love2D%29.png)
 
 ### Gameplay Video
-[Watch the demo](demo/demo.mp4)
-
-> 📝 **TODO for Human Operator:** Place your actual gameplay screenshot as `screenshots/gameplay.png` and screen recording as `demo/demo.mp4` to replace the placeholders before submitting.
+[![Watch the demo](https://img.shields.io/badge/YouTube-Watch%20Demo-red?logo=youtube)](https://youtu.be/6dNWotSYuiI)  
+▶️ **[Watch the demo on YouTube](https://youtu.be/6dNWotSYuiI)**
 
 ---
 
