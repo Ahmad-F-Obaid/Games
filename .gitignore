@@ -1,0 +1,13 @@
+# Assignment source & reference documents (never commit)
+Sources/
+
+# Temporary and editor files
+.vscode/
+.idea/
+*.tmp
+*.swp
+
+# OS metadata
+.DS_Store
+Thumbs.db
+desktop.ini
