@@ -1,5 +1,5 @@
--- Pong Game in Love2D - Part 2
--- Ball physics, wall bounces, paddle AABB collisions, scoring, and resets
+-- Pong Game in Love2D
+-- Complete implementation including Phase 1, Phase 2, and Phase 3 (Own Change: Ball speed-up)
 
 -- Screen and game constants (avoiding magic numbers)
 local SCREEN_WIDTH = 800
@@ -8,7 +8,11 @@ local PADDLE_WIDTH = 20
 local PADDLE_HEIGHT = 100
 local BALL_SIZE = 20
 local PADDLE_SPEED = 300
-local BALL_SPEED = 200
+
+-- Ball speed tuning and limits
+local BALL_BASE_SPEED = 200
+local BALL_SPEED_UP_FACTOR = 1.05 -- OWN CHANGE: 5% speed acceleration per paddle hit
+local BALL_MAX_SPEED = 600        -- OWN CHANGE: max speed cap to prevent tunneling
 
 -- Game state tables
 local player1 = {}
@@ -28,7 +32,7 @@ local function checkCollision(a, b)
            a.y + a.height > b.y
 end
 
--- Re-centers ball at the middle of the screen with randomized initial direction
+-- Re-centers ball at the middle of the screen with randomized initial direction and reset speed
 local function resetBall()
     ball.x = (SCREEN_WIDTH - ball.width) / 2
     ball.y = (SCREEN_HEIGHT - ball.height) / 2
@@ -38,8 +42,9 @@ local function resetBall()
     -- Random vertical launch direction (-1 for up, +1 for down)
     local dirY = (math.random(2) == 1) and 1 or -1
 
-    ball.dx = BALL_SPEED * dirX
-    ball.dy = BALL_SPEED * dirY
+    -- Reset to baseline speed on serve
+    ball.dx = BALL_BASE_SPEED * dirX
+    ball.dy = BALL_BASE_SPEED * dirY
 end
 
 -- Called once on startup
@@ -82,8 +87,8 @@ function love.load()
         width = BALL_SIZE,
         height = BALL_SIZE,
         size = BALL_SIZE,
-        dx = BALL_SPEED,
-        dy = BALL_SPEED
+        dx = BALL_BASE_SPEED,
+        dy = BALL_BASE_SPEED
     }
 
     -- Initialize scores and center ball
@@ -133,6 +138,10 @@ function love.update(dt)
         -- Anti-stick: reposition ball flush with the front face of the paddle
         ball.x = player1.x + player1.width
         ball.dx = -ball.dx
+
+        -- OWN CHANGE: ball speed-up on paddle hit (increases difficulty over rally)
+        ball.dx = math.min(BALL_MAX_SPEED, ball.dx * BALL_SPEED_UP_FACTOR)
+        ball.dy = math.min(BALL_MAX_SPEED, math.max(-BALL_MAX_SPEED, ball.dy * BALL_SPEED_UP_FACTOR))
     end
 
     -- Paddle collision: Right paddle (Player 2)
@@ -140,6 +149,10 @@ function love.update(dt)
         -- Anti-stick: reposition ball flush with the front face of the paddle
         ball.x = player2.x - ball.width
         ball.dx = -ball.dx
+
+        -- OWN CHANGE: ball speed-up on paddle hit (increases difficulty over rally)
+        ball.dx = math.max(-BALL_MAX_SPEED, ball.dx * BALL_SPEED_UP_FACTOR)
+        ball.dy = math.min(BALL_MAX_SPEED, math.max(-BALL_MAX_SPEED, ball.dy * BALL_SPEED_UP_FACTOR))
     end
 
     -- Scoring: ball passes left edge (Player 2 scores)
